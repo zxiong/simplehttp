@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+        "flag"
 )
 
 type loggingStatusCode struct {
@@ -55,7 +56,16 @@ func main() {
 	http.HandleFunc("/", withAccessLog(withHeaderUpdate(handler)))
 	http.HandleFunc("/healthz", withAccessLog(withHeaderUpdate(healthz)))
 
-	err := http.ListenAndServe(":8080", nil)
+	var port string
+        port, ok := os.LookupEnv("PORT")
+	if !ok {
+		port = "8099"
+	}
+
+	flag.StringVar(&port, "p", port, "Specify http server port. Default is 8099")
+        flag.Parse()
+
+	err := http.ListenAndServe(fmt.Sprintf(":%s", port), nil)
 	if err != nil {
 		log.Fatal(http.ErrAbortHandler)
 	}
