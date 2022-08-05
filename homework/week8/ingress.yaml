@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: httpserver
+  annotations:
+    cert-manager.io/issuer: letsencrypt-prod
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: ingress.jimmy.com
+      http:
+        paths:
+          - backend:
+              service:
+                name: httpserver
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix

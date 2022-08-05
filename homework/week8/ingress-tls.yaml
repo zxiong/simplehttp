@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: httpserver-tls
+  annotations:
+    cert-manager.io/issuer: letsencrypt-prod
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: ingress-tls.jimmy.com
+      http:
+        paths:
+          - backend:
+              service:
+                name: httpserver 
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - ingress-tls.jimmy.com
+      secretName: mod8-tls1
